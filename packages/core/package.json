@@ -1,6 +1,6 @@
 {
   "name": "@snowlepoard520/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "beibei-cli-dev core",
   "author": "minmin <1056640663@qq.com>",
   "homepage": "",
@@ -17,6 +17,6 @@
     "test": "echo \": run testing from root\" && exit 1"
   },
   "dependencies": {
-    "@snowlepoard520/utils": "^1.0.0"
+    "@snowlepoard520/utils": "^1.0.1"
   }
 }
