@@ -4,11 +4,38 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tap",
+    "lint": "eslint \"**/*.js\"",
+    "postlint": "template-oss-check",
+    "lintfix": "npm run lint -- --fix",
+    "preversion": "npm test",
+    "postversion": "npm publish",
+    "prepublishOnly": "git push origin --follow-tags",
+    "snap": "tap",
+    "posttest": "npm run lint",
+    "template-oss-apply": "template-oss-apply --force"
   },
-  "author": "",
+  "author": "GitHub Inc.",
   "license": "ISC",
   "devDependencies": {
     "lerna": "^5.0.0"
+  },
+  "files": [
+    "bin/",
+    "lib/"
+  ],
+  "engines": {
+    "node": "^12.13.0 || ^14.15.0 || >=16.0.0"
+  },
+  "templateOSS": {
+    "//@npmcli/template-oss": "This file is partially managed by @npmcli/template-oss. Edits may be overwritten.",
+    "version": "3.4.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sophil-minn/beibei-cli-test.git"
+  },
+  "dependencies": {
+    "import-local": "^3.1.0"
   }
 }
