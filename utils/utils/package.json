@@ -1,0 +1,22 @@
+{
+  "name": "@snowlepoard520/utils",
+  "version": "1.0.6",
+  "description": "beibei-cli-dev utils",
+  "author": "minmin <1056640663@qq.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

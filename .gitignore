@@ -1,25 +1,13 @@
 # This file is automatically added by @npmcli/template-oss. Do not edit.
 
 # ignore everything in the root
-/*
+# dependencies
+/node_modules
 
-# keep these
-!/.eslintrc.local.*
-!**/.gitignore
-!/docs/
-!/tap-snapshots/
-!/test/
-!/map.js
-!/scripts/
-!/README*
-!/LICENSE*
-!/CHANGELOG*
-!/.commitlintrc.js
-!/.eslintrc.js
-!/.github/
-!/.gitignore
-!/.npmrc
-!/SECURITY.md
-!/bin/
-!/lib/
-!/package.json
+# production
+/build
+
+# misc
+.DS_Store
+.env
+npm-debug.log
