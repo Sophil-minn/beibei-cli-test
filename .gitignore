@@ -3,5 +3,5 @@
 
 node_modules
 
-pakages/**/node_modules
-pakages/**/package-lock.json
+packages/**/node_modules
+packages/**/package-lock.json
