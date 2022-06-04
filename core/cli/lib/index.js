@@ -12,6 +12,7 @@ const constant = require('./const');
 function core() {
   checkPkgVersion();
   checkNodeVersion();
+  checkRoot(); 
 }
 
 
@@ -19,6 +20,15 @@ function checkPkgVersion() {
   // TODO
   console.log( '版本号 ：', pkg.version);
   log.success('test', 'success...');
+}
+
+// lerna add root-check  core/cli/
+function checkRoot() {
+  // TODO
+  const rootCheck = require('root-check');
+  console.log( '所有者 ：', process.geteuid());
+  rootCheck(); // root 降级
+  console.log(process.geteuid());
 }
 
 
