@@ -36,6 +36,7 @@
     "url": "https://github.com/Sophil-minn/beibei-cli-test.git"
   },
   "dependencies": {
-    "import-local": "^3.1.0"
+    "import-local": "^3.1.0",
+    "npmlog": "^6.0.2"
   }
 }
