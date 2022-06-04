@@ -20,7 +20,9 @@
     "test": "echo \": run testing from root\" && exit 1"
   },
   "dependencies": {
-    "@snowlepoard520/log": "file:../../utils/log"
+    "@snowlepoard520/log": "file:../../utils/log",
+    "colors": "^1.4.0",
+    "semver": "^7.3.7"
   },
   "publishConfig": {
     "access": "public"
