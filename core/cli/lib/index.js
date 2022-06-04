@@ -13,7 +13,7 @@ function core() {
 function checkPkgVersion() {
   // TODO
   console.log( '版本号 ：', pkg.version);
-  log();
+  log.success('test', 'success...');
 }
 
 
