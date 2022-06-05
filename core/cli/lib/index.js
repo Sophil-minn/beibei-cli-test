@@ -39,13 +39,20 @@ async function checkGlobalUpdate() {
   const currentVersion = pkg.version;
   const npmName = pkg.name;
   // 调用npm API, 获取所有版本号
-  const { getNpmVersions } = require('@snowlepoard520/get-npm-info');
+  // const { getNpmVersions } = require('@snowlepoard520/get-npm-info');
+  const { getNpmSemverVersions } = require('@snowlepoard520/get-npm-info');
 
   
   // 提取所有版本号，比对那些版本号是大于当前版本号
-  const data = await  getNpmVersions(npmName);
-  console.log(data, 'versions');
+  // const data = await  getNpmVersions(npmName);
+  const lastVersion  = await  getNpmSemverVersions(currentVersion, npmName);
+  // console.log(newVersion, 'newVersion');
   // 获取最新的版本号，提示用户更新到该版本
+  if (lastVersion && semver.gt(lastVersion, currentVersion)) {
+    log.warn(colors.yellow(`请手动更新${npmName}, 当前版本：${currentVersion} ， 最新版本： ${lastVersion}
+    更新命令： npm install -g ${npmName}
+    `));
+  }
 }
 
 

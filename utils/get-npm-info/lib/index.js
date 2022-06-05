@@ -37,6 +37,31 @@ async function getNpmVersions(npmName, registry){
   }
 }
 
+function getSemverVersions(baseVersion, versions) {
+  versions = versions
+  .filter(version => {
+    return semver.satisfies(version, `^${baseVersion}`);
+  })
+  .sort((a, b) => {
+    console.log(semver.gt(b, a), 'semver.gt(b, a)');
+    return semver.gt(b, a) ? 0 : -1;
+  });
+  // console.log(versions, 'sorted versions');
+  return versions;
+}
+
+async function getNpmSemverVersions(baseVersion, npmName, registry) {
+ const versions = await getNpmVersions(npmName, registry);
+//  console.log(versions, 'versions');
+//  console.log(baseVersion, 'baseVersion');
+ 
+ const newVersions = getSemverVersions(baseVersion, versions);
+//  console.log(newVersions, 'newVersions');
+ if (newVersions && newVersions.length ) {
+    return newVersions[0];
+ }
+}
+
 
 function getDefaultRegistry(isOriginal = false) {
   return isOriginal ? 'https://registry.npmjs.org/': 'https://registry.npm.taobao.org/'
@@ -44,6 +69,7 @@ function getDefaultRegistry(isOriginal = false) {
 
 module.exports = {
   getNpmInfo,
-  getNpmVersions
+  getNpmVersions,
+  getNpmSemverVersions
 };
 
