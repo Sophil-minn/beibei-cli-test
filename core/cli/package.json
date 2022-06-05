@@ -22,8 +22,10 @@
   "dependencies": {
     "@snowlepoard520/log": "file:../../utils/log",
     "colors": "^1.4.0",
-    "root-check": "^2.0.0",
-    "semver": "^7.3.7"
+    "path-exists": "^4.0.0",
+    "root-check": "^1.0.0",
+    "semver": "^7.3.7",
+    "user-home": "^3.0.0"
   },
   "publishConfig": {
     "access": "public"

@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "import-local": "^3.1.0",
+    "minimist": "^1.2.6",
     "npmlog": "^6.0.2"
   }
 }
