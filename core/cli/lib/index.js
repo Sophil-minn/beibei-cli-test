@@ -14,6 +14,7 @@ const constant = require('./const');
 
 
 let args;
+let config;
 
 function core() {
   try {
@@ -22,7 +23,8 @@ function core() {
     checkNodeVersion();
     checkRoot(); 
     checkInputArgs();
-    log.verbose('debugg', 'test debub log');
+    // log.verbose('debugg', 'test debub log');
+    checkEnv();
   } catch (error) {
     log.error(error.message);
   }
@@ -85,3 +87,8 @@ function checkNodeVersion() {
 }
 
 
+function checkEnv() {
+  const dotenv = require('dotenv');
+  config = dotenv.config({});
+  log.verbose('环境变量', config);
+}
