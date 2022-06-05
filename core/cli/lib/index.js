@@ -2,6 +2,7 @@
 
 module.exports = core;
 
+const path = require('path');
 const semver = require('semver');
 const colors = require('colors/safe');
 const userHome = require('user-home');
@@ -24,6 +25,7 @@ function core() {
     checkRoot(); 
     checkInputArgs();
     // log.verbose('debugg', 'test debub log');
+
     checkEnv();
   } catch (error) {
     log.error(error.message);
@@ -89,6 +91,12 @@ function checkNodeVersion() {
 
 function checkEnv() {
   const dotenv = require('dotenv');
-  config = dotenv.config({});
+  const dotenvPath = path.resolve(userHome, '.env');
+  if (pathExists(dotenvPath)) {
+    config = dotenv.config({
+      path: dotenvPath
+    });
+  }
+  
   log.verbose('环境变量', config);
 }
