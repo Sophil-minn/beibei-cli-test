@@ -10,8 +10,19 @@ function getNpmInfo(npmName, registry) {
     return null;
   }
   const registryUrl = registry || getDefaultRegistry();
-  const npmInfoUrl = urlJoin(registryUrl, npmName);
-  console.log(npmInfoUrl, 'npmInfoUrl');
+  const testUrl = '@imooc-cli/core'
+  const npmInfoUrl = urlJoin(registryUrl, testUrl);
+  return axios.get(npmInfoUrl).then(response => {
+    if(response.status === 200) {
+      console.log(response, 'response');
+      return response.data;
+    }
+    return null;
+  }).catch(
+    err => {
+      return Promise.reject(err);
+    }
+  );
 }
 
 function getDefaultRegistry(isOriginal = false) {
