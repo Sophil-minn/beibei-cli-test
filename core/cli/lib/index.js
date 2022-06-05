@@ -17,7 +17,7 @@ const constant = require('./const');
 let args;
 let config;
 
-function core() {
+async function core() {
   try {
     checkUserHome(); 
     checkPkgVersion();
@@ -25,13 +25,24 @@ function core() {
     checkRoot(); 
     checkInputArgs();
     // log.verbose('debugg', 'test debub log');
-
     checkEnv();
+    checkGlobalUpdate();
   } catch (error) {
     log.error(error.message);
   }
   
   
+}
+
+function checkGlobalUpdate() {
+  // 获取当前版本和模块
+  const currentVersion = pkg.version;
+  const npmName = pkg.name;
+  // 调用npm API, 获取所有版本号
+  const { getNpmInfo } = require('@snowlepoard520/get-npm-info');
+  getNpmInfo(npmName);
+  // 提取所有版本号，比对那些版本号是大于当前版本号
+  // 获取最新的版本号，提示用户更新到该版本
 }
 
 
