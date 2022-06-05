@@ -97,6 +97,19 @@ function checkEnv() {
       path: dotenvPath
     });
   }
-  
-  log.verbose('环境变量', config);
+  createDefaultConfig();
+  log.verbose('环境变量', process.env.CLI_HOME_PATH);
+}
+
+function createDefaultConfig() {
+  const cliConfig = {
+    home: userHome,
+  }
+  if (process.env.CLI_HOME) {
+    cliConfig['cliHome'] = path.join(userHome, process.env.CLI_HOME);
+  } else {
+    cliConfig['cliHome'] = path.join(userHome, constant.DEFAULT_CLI_HOME);
+  }
+  process.env.CLI_HOME_PATH = cliConfig.cliHome;
+  return cliConfig;
 }
