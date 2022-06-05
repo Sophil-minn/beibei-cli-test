@@ -39,9 +39,12 @@ async function checkGlobalUpdate() {
   const currentVersion = pkg.version;
   const npmName = pkg.name;
   // 调用npm API, 获取所有版本号
-  const { getNpmInfo } = require('@snowlepoard520/get-npm-info');
-  const data = await getNpmInfo(npmName);
+  const { getNpmVersions } = require('@snowlepoard520/get-npm-info');
+
+  
   // 提取所有版本号，比对那些版本号是大于当前版本号
+  const data = await  getNpmVersions(npmName);
+  console.log(data, 'versions');
   // 获取最新的版本号，提示用户更新到该版本
 }
 
