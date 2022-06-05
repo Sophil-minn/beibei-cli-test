@@ -22,5 +22,10 @@
   },
   "bugs": {
     "url": "https://github.com/Sophil-minn/beibei-cli-test/issues"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "semver": "^7.3.7",
+    "url-join": "^4.0.1"
   }
 }
