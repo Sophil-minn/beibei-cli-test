@@ -27,10 +27,10 @@ async function core() {
     checkPkgVersion();
     checkNodeVersion();
     checkRoot(); 
-    checkInputArgs();
+    // checkInputArgs();
     // log.verbose('debugg', 'test debub log');
     checkEnv();
-    checkGlobalUpdate();
+    // checkGlobalUpdate();
     registerCommand();
   } catch (error) {
     log.error(error.message);
@@ -43,7 +43,35 @@ function registerCommand() {
     .usage('<command> [options]')
     .version(pkg.version)
     .option('-d, --debug', '是否开启调试模式', false);
-  program.parse(process.argv);
+
+    program.on('option:debug', function() {
+      log.verbose('test',34567, log);
+      if (program.opts().debug) {
+        process.env.LOG_LEVEL = 'verbose';
+      } else {
+        process.env.LOG_LEVEL = 'info';
+      }
+      log.level = process.env.LOG_LEVEL;
+      log.verbose('test', 'program.on');
+    });
+    // 对未知命令监听
+    program.on('command:*', function(obj) {
+      const avaiableCommands = program.commands.map(cmd => cmd.name());
+      console.log(colors.red('未知的命令：' + obj[0]), program);
+      if(avaiableCommands.length) {
+        console.log(colors.red('可用命令：' + avaiableCommands.join(',')));
+      }
+    });
+
+    if(process.argv.length < 3) {
+      program.outputHelp();
+    }
+    if(program.args && program.args.length < 1) {
+      program.outputHelp();
+    }
+  
+    program.parse(process.argv);
+  
 
 }
 
