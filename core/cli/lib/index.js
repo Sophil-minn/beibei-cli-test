@@ -10,11 +10,15 @@ const pathExists = require('path-exists').sync;
 
 
 const pkg = require('../package.json');
+const commander = require('commander');
 const log = require('@snowlepoard520/log');
 const constant = require('./const');
 
 
 let args;
+
+const program = new commander.Command();
+
 let config;
 
 async function core() {
@@ -27,11 +31,20 @@ async function core() {
     // log.verbose('debugg', 'test debub log');
     checkEnv();
     checkGlobalUpdate();
+    registerCommand();
   } catch (error) {
     log.error(error.message);
   }
-  
-  
+}
+
+function registerCommand() {
+  program
+    .name('注册 名字')
+    .usage('<command> [options]')
+    .version(pkg.version)
+    .option('-d, --debug', '是否开启调试模式', false);
+  program.parse(process.argv);
+
 }
 
 async function checkGlobalUpdate() {

@@ -43,7 +43,7 @@ function getSemverVersions(baseVersion, versions) {
     return semver.satisfies(version, `^${baseVersion}`);
   })
   .sort((a, b) => {
-    console.log(semver.gt(b, a), 'semver.gt(b, a)');
+    // console.log(semver.gt(b, a), 'semver.gt(b, a)');
     return semver.gt(b, a) ? 0 : -1;
   });
   // console.log(versions, 'sorted versions');
