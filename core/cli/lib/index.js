@@ -24,14 +24,7 @@ let config;
 
 async function core() {
   try {
-    checkUserHome(); 
-    checkPkgVersion();
-    checkNodeVersion();
-    checkRoot(); 
-    // checkInputArgs();
-    // log.verbose('debugg', 'test debub log');
-    checkEnv();
-    // checkGlobalUpdate();
+    await prepare();
     registerCommand();
   } catch (error) {
     log.error(error.message);
@@ -92,6 +85,17 @@ function registerCommand() {
 
 }
 
+async function prepare() {
+  checkPkgVersion();
+  checkNodeVersion();
+  checkRoot(); 
+  checkUserHome(); 
+  // checkInputArgs();
+  // log.verbose('debugg', 'test debub log');
+  checkEnv();
+  await checkGlobalUpdate();
+}
+
 async function checkGlobalUpdate() {
   // 获取当前版本和模块
   const currentVersion = pkg.version;
@@ -117,12 +121,9 @@ async function checkGlobalUpdate() {
 function checkPkgVersion() {
   // TODO
   console.log( '版本号 ：', pkg.version);
-  log.success('test', 'success...');
 }
 
 function checkUserHome() {
-
-  console.log(userHome, 'userHome');
   if (!userHome || !pathExists(userHome)) {
     throw new Error(colors.red('当前登陆用户主目录不存在！'))
   }
@@ -132,31 +133,11 @@ function checkUserHome() {
 function checkRoot() {
   // TODO
   const rootCheck = require('root-check');
-  console.log( '所有者 ：', process.geteuid());
   rootCheck(); // root 降级
-  console.log(process.geteuid());
 }
-
-function checkInputArgs() {
-   const minimist = require('minimist');
-   args = minimist(process.argv.slice(2));
-   console.log(args, 'checkInputArgs');
-   checkArgs();
-}
-
-function checkArgs() {
-  if(args.debug) {
-    process.env.LOG_LEVEL = 'vebose';
-  } else {
-    process.env.LOG_LEVEL = 'info';
-  }
-  log.level = process.env.LOG_LEVEL;
-}
-
 
 function checkNodeVersion() {
   // 获取当前node版本号
-  console.log(process.version);
   const currentVersion = process.version;
   // 比对最低版本号
   const lowestVersion = constant.LOWEST_NODE_VERSION;
@@ -177,7 +158,6 @@ function checkEnv() {
     });
   }
   createDefaultConfig();
-  log.verbose('环境变量', process.env.CLI_HOME_PATH);
 }
 
 function createDefaultConfig() {
