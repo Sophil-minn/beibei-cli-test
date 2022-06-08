@@ -57,10 +57,11 @@ function registerCommand() {
     });
 
     program.on('option:targetPath', function() {
+      console.log(program.opts(), 'program.opts()');
       process.env.CLI_TARGET_PATH = program.opts().targetPath;
-      console.log('targetPathtargetPath');
-      console.log(program.opts().targetPath, 'program');
-      log.verbose('test', 'targetPath');
+      // console.log('targetPathtargetPath');
+      // console.log(program.opts().targetPath, 'program');
+      // log.verbose('test', 'targetPath');
     });
 
 
