@@ -44,7 +44,7 @@ function registerCommand() {
     .usage('<command> [options]')
     .version(pkg.version)
     .option('-d, --debug', '是否开启调试模式', false)
-    .option('-tp, --targetPath', '是否开启调试模式', false);
+    .option('-tp, --targetPath <targetPath>', '是否指定本地文件路径', '');
 
     program 
       .command('init [projectName]')
@@ -64,7 +64,7 @@ function registerCommand() {
 
     program.on('option:targetPath', function() {
       console.log('targetPathtargetPath');
-      // console.log(process.argv, 'argv');
+      console.log(program.opts().targetPath, 'program');
       log.verbose('test', 'targetPath');
     });
 
