@@ -13,6 +13,7 @@ const pkg = require('../package.json');
 const commander = require('commander');
 const log = require('@snowlepoard520/log');
 const init = require('@snowlepoard520/init');
+const exec = require('@snowlepoard520/exec');
 const constant = require('./const');
 
 
@@ -42,7 +43,7 @@ function registerCommand() {
     program 
       .command('init [projectName]')
       .option('-f, --force', '是否 强制初始化项目', false)
-      .action(init)
+      .action(exec)
 
     program.on('option:debug', function() {
       log.verbose('test',34567, log);

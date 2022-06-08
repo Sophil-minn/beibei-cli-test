@@ -23,6 +23,7 @@
     "@snowlepoard520/get-npm-info": "file:../../utils/get-npm-info",
     "@snowlepoard520/log": "file:../../utils/log",
     "@snowlepoard520/init": "file:../../commands/init",
+    "@snowlepoard520/exec": "file:../exec",
     "colors": "^1.4.0",
     "commander": "^9.3.0",
     "path-exists": "^4.0.0",
