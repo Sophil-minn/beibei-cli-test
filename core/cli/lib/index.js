@@ -12,6 +12,7 @@ const pathExists = require('path-exists').sync;
 const pkg = require('../package.json');
 const commander = require('commander');
 const log = require('@snowlepoard520/log');
+const init = require('@snowlepoard520/init');
 const constant = require('./const');
 
 
@@ -39,10 +40,16 @@ async function core() {
 
 function registerCommand() {
   program
-    .name('注册 名字')
+    .name(Object.keys(pkg.bin)[0])
     .usage('<command> [options]')
     .version(pkg.version)
-    .option('-d, --debug', '是否开启调试模式', false);
+    .option('-d, --debug', '是否开启调试模式', false)
+    .option('-tp, --targetPath', '是否开启调试模式', false);
+
+    program 
+      .command('init [projectName]')
+      .option('-f, --force', '是否 强制初始化项目', false)
+      .action(init)
 
     program.on('option:debug', function() {
       log.verbose('test',34567, log);
@@ -54,6 +61,15 @@ function registerCommand() {
       log.level = process.env.LOG_LEVEL;
       log.verbose('test', 'program.on');
     });
+
+    program.on('option:targetPath', function() {
+      console.log('targetPathtargetPath');
+      // console.log(process.argv, 'argv');
+      log.verbose('test', 'targetPath');
+    });
+
+
+
     // 对未知命令监听
     program.on('command:*', function(obj) {
       const avaiableCommands = program.commands.map(cmd => cmd.name());
