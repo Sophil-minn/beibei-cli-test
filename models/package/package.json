@@ -1,6 +1,6 @@
 {
-  "name": "@snowlepoard520/exec",
-  "version": "1.0.0",
+  "name": "@snowlepoard520/package",
+  "version": "1.0.6",
   "description": "> TODO: description",
   "author": "minmin <1056640663@qq.com>",
   "homepage": "https://github.com/Sophil-minn/beibei-cli-test#readme",
@@ -25,8 +25,5 @@
   },
   "bugs": {
     "url": "https://github.com/Sophil-minn/beibei-cli-test/issues"
-  },
-  "dependencies": {
-    "@snowlepoard520/package": "file:../../models/package"
   }
 }
