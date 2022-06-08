@@ -20,8 +20,11 @@
     "test": "echo \": run testing from root\" && exit 1"
   },
   "dependencies": {
+    "@snowlepoard520/get-npm-info": "file:../../utils/get-npm-info",
     "@snowlepoard520/log": "file:../../utils/log",
+    "@snowlepoard520/init": "file:../../commands/init",
     "colors": "^1.4.0",
+    "commander": "^9.3.0",
     "path-exists": "^4.0.0",
     "root-check": "^1.0.0",
     "semver": "^7.3.7",
