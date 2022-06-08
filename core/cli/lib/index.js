@@ -63,6 +63,7 @@ function registerCommand() {
     });
 
     program.on('option:targetPath', function() {
+      process.env.CLI_TARGET_PATH = program.opts().targetPath;
       console.log('targetPathtargetPath');
       console.log(program.opts().targetPath, 'program');
       log.verbose('test', 'targetPath');
