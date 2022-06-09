@@ -1,5 +1,6 @@
 'use strict';
 
+const pkgDir = require('pkg-dir');
 const { isObject } = require('@snowlepoard520/utils');
 
 class Package {
@@ -10,10 +11,10 @@ class Package {
     if(!isObject(options)) {  
       throw new Error('package类 options参数必须为对象');
     }
-    // package的路径
+    // package的目标路径
     this.targetPath = options.targetPath;
     // package的存储路径
-    this.storePath = options.storePath;
+    // this.storePath = options.storePath;
     // package的name
     this.packageName = options.packageName;
     // package的version
@@ -38,7 +39,12 @@ class Package {
 
   // 获取入口文件的路径
   getRootFilePath() {
-
+    // 1、获取package.json所在目录- pkg-dir
+    const dir = pkgDir(this.targetPath);
+    console.log(dir, 'dir');
+    // 2、读取package.json
+    // 3、寻找main/lib
+    // 4、路径的兼容（macOS/windows）
   }
 }
 

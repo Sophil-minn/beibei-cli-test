@@ -27,6 +27,7 @@
     "url": "https://github.com/Sophil-minn/beibei-cli-test/issues"
   },
   "dependencies": {
-    "@snowlepoard520/utils": "file:../../utils/utils"
+    "@snowlepoard520/utils": "file:../../utils/utils",
+    "pkg-dir": "^5.0.0"
   }
 }
