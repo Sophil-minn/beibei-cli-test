@@ -1,15 +1,20 @@
 'use strict';
 
+const path = require('path');
 const Package = require('@snowlepoard520/package');
 const log = require('@snowlepoard520/log');
 
 const SETTINGS = {
-  init: '@snowlepoard520/init'
+  init: '@imooc-cli/init'
 }
 
+const CACHE_DIR = 'dependencies/';
+
 function exec() {
-  const targetPath = process.env.CLI_TARGET_PATH;
+  let targetPath = process.env.CLI_TARGET_PATH;
   const homePath = process.env.CLI_HOME_PATH;
+  let storeDir = '';
+  let pkg = '';
   log.verbose('targetPath', targetPath);
   log.verbose('homePath', homePath);
   const cmdObj = arguments[arguments.length - 1];
@@ -17,14 +22,41 @@ function exec() {
   console.log(cmdObj.opts().force, cmdObj._name, 'force');
   const packageName = SETTINGS[cmdName];
   const packageVersion = 'lattest';
-  const pkg = new Package({
-    targetPath,
-    packageName,
-    packageVersion
-  });
+
+
+  if(!targetPath) {
+    // 生成缓存路径
+    targetPath = path.resolve(homePath, CACHE_DIR);
+    storeDir = path.resolve(targetPath, 'node_modules');
+    log.verbose(targetPath, 'targetPath', storeDir, 'storeDir');
+    pkg = new Package({
+      targetPath,
+      storeDir,
+      packageName,
+      packageVersion
+    });
+    if(pkg.exists()) {
+      // 更新package
+
+    } else {
+      // 安装package
+      pkg.install();
+    }
+  } else {
+    pkg = new Package({
+      targetPath,
+      packageName,
+      packageVersion
+    });
+  }
+  const rootFile = pkg.getRootFilePath();
+  require(rootFile).apply(null, arguments);
   
-  console.log(pkg, 1234);
-  console.log('exec', 111);
+
+  const dir = pkg.getRootFilePath();
+  
+  // console.log(pkg, 1234);
+  console.log(dir, 111);
 }
 
 module.exports = exec;

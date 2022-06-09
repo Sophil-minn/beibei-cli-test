@@ -1,10 +1,12 @@
 // import {packageDirectory} from 'pkg-dir';
+const npminstall = require('npminstall');
 const path = require('path');
 const pkgDir = require('pkg-dir').sync;
 
 
 const { isObject } = require('@snowlepoard520/utils');
 const formatPath = require('@snowlepoard520/format-path');
+const { getDefaultRegistry } = require('@snowlepoard520/get-npm-info');
 
 class Package {
   constructor(options) {
@@ -16,6 +18,8 @@ class Package {
     }
     // package的目标路径
     this.targetPath = options.targetPath;
+    // package的缓存路径
+    this.storeDir = options.storeDir;
     // package的存储路径
     // this.storePath = options.storePath;
     // package的name
@@ -32,7 +36,15 @@ class Package {
 
   // 安装package
   install() {
-
+    // 安装依赖使用
+    npminstall({
+      root: this.targetPath,
+      storeDir: this.storeDir,
+      regitry: getDefaultRegistry(),
+      pkgs: [
+        { name: this.packageName, version: this.packageVersion }
+      ]
+    })
   }
 
   // 更新package

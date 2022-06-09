@@ -1,6 +1,6 @@
 {
-  "name": "@snowlepoard520/package",
-  "version": "1.0.6",
+  "name": "@snowlepoard520/format-path",
+  "version": "1.0.0",
   "description": "> TODO: description",
   "author": "minmin <1056640663@qq.com>",
   "homepage": "https://github.com/Sophil-minn/beibei-cli-test#readme",
@@ -25,12 +25,5 @@
   },
   "bugs": {
     "url": "https://github.com/Sophil-minn/beibei-cli-test/issues"
-  },
-  "dependencies": {
-    "@snowlepoard520/format-path": "file:../../utils/format-path",
-    "@snowlepoard520/utils": "file:../../utils/utils",
-    "@snowlepoard520/get-npm-info": "file:../../utils/get-npm-info",
-    "npminstall": "^6.3.0",
-    "pkg-dir": "^5.0.0"
   }
 }
