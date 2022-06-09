@@ -13,6 +13,7 @@ const pkg = require('../package.json');
 const commander = require('commander');
 const log = require('@snowlepoard520/log');
 const init = require('@snowlepoard520/init');
+const exec = require('@snowlepoard520/exec');
 const constant = require('./const');
 
 
@@ -24,14 +25,7 @@ let config;
 
 async function core() {
   try {
-    checkUserHome(); 
-    checkPkgVersion();
-    checkNodeVersion();
-    checkRoot(); 
-    // checkInputArgs();
-    // log.verbose('debugg', 'test debub log');
-    checkEnv();
-    // checkGlobalUpdate();
+    await prepare();
     registerCommand();
   } catch (error) {
     log.error(error.message);
@@ -44,12 +38,12 @@ function registerCommand() {
     .usage('<command> [options]')
     .version(pkg.version)
     .option('-d, --debug', '是否开启调试模式', false)
-    .option('-tp, --targetPath', '是否开启调试模式', false);
+    .option('-tp, --targetPath <targetPath>', '是否指定本地文件路径', '');
 
     program 
       .command('init [projectName]')
       .option('-f, --force', '是否 强制初始化项目', false)
-      .action(init)
+      .action(exec)
 
     program.on('option:debug', function() {
       log.verbose('test',34567, log);
@@ -63,9 +57,11 @@ function registerCommand() {
     });
 
     program.on('option:targetPath', function() {
-      console.log('targetPathtargetPath');
-      // console.log(process.argv, 'argv');
-      log.verbose('test', 'targetPath');
+      console.log(program.opts(), 'program.opts()');
+      process.env.CLI_TARGET_PATH = program.opts().targetPath;
+      // console.log('targetPathtargetPath');
+      // console.log(program.opts().targetPath, 'program');
+      // log.verbose('test', 'targetPath');
     });
 
 
@@ -89,6 +85,17 @@ function registerCommand() {
     program.parse(process.argv);
   
 
+}
+
+async function prepare() {
+  checkPkgVersion();
+  checkNodeVersion();
+  checkRoot(); 
+  checkUserHome(); 
+  // checkInputArgs();
+  // log.verbose('debugg', 'test debub log');
+  checkEnv();
+  await checkGlobalUpdate();
 }
 
 async function checkGlobalUpdate() {
@@ -116,12 +123,9 @@ async function checkGlobalUpdate() {
 function checkPkgVersion() {
   // TODO
   console.log( '版本号 ：', pkg.version);
-  log.success('test', 'success...');
 }
 
 function checkUserHome() {
-
-  console.log(userHome, 'userHome');
   if (!userHome || !pathExists(userHome)) {
     throw new Error(colors.red('当前登陆用户主目录不存在！'))
   }
@@ -131,31 +135,11 @@ function checkUserHome() {
 function checkRoot() {
   // TODO
   const rootCheck = require('root-check');
-  console.log( '所有者 ：', process.geteuid());
   rootCheck(); // root 降级
-  console.log(process.geteuid());
 }
-
-function checkInputArgs() {
-   const minimist = require('minimist');
-   args = minimist(process.argv.slice(2));
-   console.log(args, 'checkInputArgs');
-   checkArgs();
-}
-
-function checkArgs() {
-  if(args.debug) {
-    process.env.LOG_LEVEL = 'vebose';
-  } else {
-    process.env.LOG_LEVEL = 'info';
-  }
-  log.level = process.env.LOG_LEVEL;
-}
-
 
 function checkNodeVersion() {
   // 获取当前node版本号
-  console.log(process.version);
   const currentVersion = process.version;
   // 比对最低版本号
   const lowestVersion = constant.LOWEST_NODE_VERSION;
@@ -176,7 +160,6 @@ function checkEnv() {
     });
   }
   createDefaultConfig();
-  log.verbose('环境变量', process.env.CLI_HOME_PATH);
 }
 
 function createDefaultConfig() {
