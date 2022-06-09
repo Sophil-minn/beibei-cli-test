@@ -1,6 +1,8 @@
-'use strict';
+import {packageDirectory} from 'pkg-dir';
 
-const pkgDir = require('pkg-dir');
+// const pkgDir = require('pkg-dir');
+
+
 const { isObject } = require('@snowlepoard520/utils');
 
 class Package {
@@ -40,8 +42,9 @@ class Package {
   // 获取入口文件的路径
   getRootFilePath() {
     // 1、获取package.json所在目录- pkg-dir
-    const dir = pkgDir(this.targetPath);
-    console.log(dir, 'dir');
+    console.log(await packageDirectory(this.targetPath));
+    // const dir = pkgDir(this.targetPath);
+    // console.log(dir, 'dir');
     // 2、读取package.json
     // 3、寻找main/lib
     // 4、路径的兼容（macOS/windows）

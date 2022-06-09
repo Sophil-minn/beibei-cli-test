@@ -23,11 +23,12 @@
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
+  "type": "module",
   "bugs": {
     "url": "https://github.com/Sophil-minn/beibei-cli-test/issues"
   },
   "dependencies": {
     "@snowlepoard520/utils": "file:../../utils/utils",
-    "pkg-dir": "^5.0.0"
+    "pkg-dir": "^6.0.1"
   }
 }
