@@ -37,7 +37,7 @@ async function exec() {
     });
     if(await pkg.exists()) {
       // 更新package
-
+      console.log('更新package');
     } else {
       // 安装package 异步执行
       await pkg.install();

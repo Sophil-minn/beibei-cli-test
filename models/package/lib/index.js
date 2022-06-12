@@ -27,14 +27,22 @@ class Package {
     this.packageName = options.packageName;
     // package的version
     this.packageVersion = options.packageVersion;
-    console.log('初始化 package constructor');
+    // console.log('初始化 package constructor');
+    // package的缓存目录前缀
+    this.cacheFilePathPrefix = this.packageName.replace('/', '_');
   }
 
   async prepare() {
     if (this.packageVersion === 'latest') {
       this.packageVersion = await getNpmLatestVersion(this.packageName);
     }
-    console.log(this.packageVersion, '最新的版本');
+    // _@imooc-cli_init@1.1.3@@imooc-cli
+    // packageName: imooc-cli/init version: 1.1.3
+    // console.log(this.packageVersion, '最新的版本');
+  }
+
+  get cacheFilePath() {
+    return path.resolve(this.storeDir, `_${this.cacheFilePathPrefix}@${this.packageVersion}@${this.packageName}`);
   }
 
   // 判断当前package是否存在
@@ -42,6 +50,7 @@ class Package {
     // 处于缓存模式
     if (this.storeDir) {
       await this.prepare();
+      return pathExists(this.cacheFilePath);
     } else {
       return pathExists(this.targetPath);
     }
@@ -49,9 +58,9 @@ class Package {
   }
 
   // 安装package
-  install() {
+  async install() {
     // 安装依赖使用
-    
+    await this.prepare();
     return npminstall({
       root: this.targetPath,
       storeDir: this.storeDir,
