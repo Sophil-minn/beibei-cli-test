@@ -37,14 +37,16 @@ class Package {
   // 安装package
   install() {
     // 安装依赖使用
-    npminstall({
+    
+    return npminstall({
       root: this.targetPath,
       storeDir: this.storeDir,
-      regitry: getDefaultRegistry(),
+      regitry: getDefaultRegistry(true),
       pkgs: [
         { name: this.packageName, version: this.packageVersion }
       ]
     })
+    
   }
 
   // 更新package

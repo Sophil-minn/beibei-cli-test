@@ -6,7 +6,7 @@ function formatPath(p) {
   if(p && typeof p === 'string') {
     const sep = path.sep;
     // mac返回的是/ window返回的是 \
-    console.log(sep, 'sep');
+    // console.log(sep, 'sep');
     if (sep === '/') {
       return p;
     } else {

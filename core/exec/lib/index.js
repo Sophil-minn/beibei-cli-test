@@ -10,7 +10,7 @@ const SETTINGS = {
 
 const CACHE_DIR = 'dependencies/';
 
-function exec() {
+async function exec() {
   let targetPath = process.env.CLI_TARGET_PATH;
   const homePath = process.env.CLI_HOME_PATH;
   let storeDir = '';
@@ -21,7 +21,7 @@ function exec() {
   const cmdName = cmdObj._name;
   console.log(cmdObj.opts().force, cmdObj._name, 'force');
   const packageName = SETTINGS[cmdName];
-  const packageVersion = 'lattest';
+  const packageVersion = 'latest';
 
 
   if(!targetPath) {
@@ -39,8 +39,8 @@ function exec() {
       // 更新package
 
     } else {
-      // 安装package
-      pkg.install();
+      // 安装package 异步执行
+      await pkg.install();
     }
   } else {
     pkg = new Package({
@@ -49,14 +49,24 @@ function exec() {
       packageVersion
     });
   }
-  const rootFile = pkg.getRootFilePath();
-  require(rootFile).apply(null, arguments);
-  
 
-  const dir = pkg.getRootFilePath();
+  console.log('npminstall @@@@@@@');
+  const rootFile = pkg.getRootFilePath();
+  console.log(rootFile,  'rootFilerootFilerootFile');
+  if (rootFile) {
+    console.log(888);
+    try {
+      require(rootFile).apply(null, arguments);
+    } catch (error) {
+      console.log(error, 'error');
+    }
+    // console.log( require(rootFile), ' require(rootFile)');
+    // require(rootFile).apply(null, arguments);
+  }
+  // const dir = pkg.getRootFilePath();
   
   // console.log(pkg, 1234);
-  console.log(dir, 111);
+  // console.log(dir, 111);
 }
 
 module.exports = exec;
