@@ -1,6 +1,7 @@
 // import {packageDirectory} from 'pkg-dir';
 const npminstall = require('npminstall');
 const path = require('path');
+const fse = require('fs-extra');
 const pkgDir = require('pkg-dir').sync;
 const pathExists = require('path-exists').sync;
 
@@ -33,6 +34,10 @@ class Package {
   }
 
   async prepare() {
+    if (this.storeDir && !pathExists(this.storeDir)) {
+      console.log('生成目录：');
+      fse.mkdirpSync(this.storeDir);
+    }
     if (this.packageVersion === 'latest') {
       this.packageVersion = await getNpmLatestVersion(this.packageName);
     }
@@ -43,6 +48,10 @@ class Package {
 
   get cacheFilePath() {
     return path.resolve(this.storeDir, `_${this.cacheFilePathPrefix}@${this.packageVersion}@${this.packageName}`);
+  }
+
+  getSpecificCacheFilePath (packageVersion) {
+    return path.resolve(this.storeDir, `_${this.cacheFilePathPrefix}@${packageVersion}@${this.packageName}`);
   }
 
   // 判断当前package是否存在
@@ -61,6 +70,7 @@ class Package {
   async install() {
     // 安装依赖使用
     await this.prepare();
+    console.log(this.packageVersion, 'this.packageVersion');
     return npminstall({
       root: this.targetPath,
       storeDir: this.storeDir,
@@ -73,8 +83,29 @@ class Package {
   }
 
   // 更新package
-  update() {
-
+  async update() {
+    console.log('package update');
+    await this.prepare();
+    // 1. 获取最新的npm模块版本号
+    const latestPackageVersion = await getNpmLatestVersion(this.packageName);
+    // 2. 查询最新版本号对应的路径是否存在
+    const latestFilePath = this.getSpecificCacheFilePath(latestPackageVersion);
+    console.log(latestFilePath, 'latestFilePath');
+    // 3. 如果不存在，则直接安装最新版本
+    if(!pathExists(latestFilePath)) {
+      console.log('我需要更新package');
+      await npminstall({
+        root: this.targetPath,
+        storeDir: this.storeDir,
+        regitry: getDefaultRegistry(true),
+        pkgs: [
+          { name: this.packageName, version: latestPackageVersion }
+        ]
+      })
+      this.packageVersion = latestPackageVersion;
+    } else {
+      console.log('不需要更新，我是最新的包');
+    }
   }
 
   // 获取入口文件的路径

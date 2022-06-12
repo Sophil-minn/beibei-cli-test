@@ -21,7 +21,7 @@ async function exec() {
   const cmdName = cmdObj._name;
   console.log(cmdObj.opts().force, cmdObj._name, 'force');
   const packageName = SETTINGS[cmdName];
-  const packageVersion = 'latest';
+  const packageVersion = '1.1.0';
 
 
   if(!targetPath) {
@@ -37,7 +37,7 @@ async function exec() {
     });
     if(await pkg.exists()) {
       // 更新package
-      console.log('更新package');
+      await pkg.update();
     } else {
       // 安装package 异步执行
       await pkg.install();
@@ -58,7 +58,7 @@ async function exec() {
     try {
       require(rootFile).apply(null, arguments);
     } catch (error) {
-      console.log(error, 'error');
+      // console.log(error, 'error');
     }
     // console.log( require(rootFile), ' require(rootFile)');
     // require(rootFile).apply(null, arguments);
