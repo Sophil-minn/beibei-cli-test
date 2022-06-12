@@ -35,9 +35,9 @@ async function exec() {
       packageName,
       packageVersion
     });
-    if(pkg.exists()) {
+    if(await pkg.exists()) {
       // 更新package
-
+      await pkg.update();
     } else {
       // 安装package 异步执行
       await pkg.install();
@@ -50,7 +50,7 @@ async function exec() {
     });
   }
 
-  console.log('npminstall @@@@@@@');
+  console.log('npminstall @@@@@@@', await pkg.exists());
   const rootFile = pkg.getRootFilePath();
   console.log(rootFile,  'rootFilerootFilerootFile');
   if (rootFile) {
@@ -58,7 +58,7 @@ async function exec() {
     try {
       require(rootFile).apply(null, arguments);
     } catch (error) {
-      console.log(error, 'error');
+      // console.log(error, 'error');
     }
     // console.log( require(rootFile), ' require(rootFile)');
     // require(rootFile).apply(null, arguments);

@@ -28,9 +28,11 @@
   },
   "dependencies": {
     "@snowlepoard520/format-path": "file:../../utils/format-path",
-    "@snowlepoard520/utils": "file:../../utils/utils",
     "@snowlepoard520/get-npm-info": "file:../../utils/get-npm-info",
+    "@snowlepoard520/utils": "file:../../utils/utils",
+    "fs-extra": "^10.1.0",
     "npminstall": "^6.3.0",
+    "path-exists": "^4.0.0",
     "pkg-dir": "^5.0.0"
   }
 }
