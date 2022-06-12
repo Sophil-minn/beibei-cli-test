@@ -70,6 +70,7 @@ function getDefaultRegistry(isOriginal = false) {
 module.exports = {
   getNpmInfo,
   getNpmVersions,
-  getNpmSemverVersions
+  getNpmSemverVersions,
+  getDefaultRegistry
 };
 
