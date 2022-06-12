@@ -54,13 +54,26 @@ async function getNpmSemverVersions(baseVersion, npmName, registry) {
  const versions = await getNpmVersions(npmName, registry);
 //  console.log(versions, 'versions');
 //  console.log(baseVersion, 'baseVersion');
- 
  const newVersions = getSemverVersions(baseVersion, versions);
 //  console.log(newVersions, 'newVersions');
  if (newVersions && newVersions.length ) {
     return newVersions[0];
  }
 }
+
+async function getNpmLatestVersion(npmName, registry) {
+  let versions = await getNpmVersions(npmName, registry);
+  if (versions) {
+    return versions.sort(
+      (a, b) => {
+        // console.log(semver.gt(b, a), 'semver.gt(b, a)');
+        return semver.gt(b, a) ? 0 : -1;
+      }
+    )[0];
+  }
+  return null;
+}
+
 
 
 function getDefaultRegistry(isOriginal = false) {
@@ -71,6 +84,7 @@ module.exports = {
   getNpmInfo,
   getNpmVersions,
   getNpmSemverVersions,
-  getDefaultRegistry
+  getDefaultRegistry,
+  getNpmLatestVersion
 };
 

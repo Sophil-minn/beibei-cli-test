@@ -35,7 +35,7 @@ async function exec() {
       packageName,
       packageVersion
     });
-    if(pkg.exists()) {
+    if(await pkg.exists()) {
       // 更新package
 
     } else {
@@ -50,7 +50,7 @@ async function exec() {
     });
   }
 
-  console.log('npminstall @@@@@@@');
+  console.log('npminstall @@@@@@@', await pkg.exists());
   const rootFile = pkg.getRootFilePath();
   console.log(rootFile,  'rootFilerootFilerootFile');
   if (rootFile) {

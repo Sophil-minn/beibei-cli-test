@@ -2,11 +2,12 @@
 const npminstall = require('npminstall');
 const path = require('path');
 const pkgDir = require('pkg-dir').sync;
+const pathExists = require('path-exists').sync;
 
 
 const { isObject } = require('@snowlepoard520/utils');
 const formatPath = require('@snowlepoard520/format-path');
-const { getDefaultRegistry } = require('@snowlepoard520/get-npm-info');
+const { getDefaultRegistry, getNpmLatestVersion } = require('@snowlepoard520/get-npm-info');
 
 class Package {
   constructor(options) {
@@ -29,8 +30,21 @@ class Package {
     console.log('初始化 package constructor');
   }
 
+  async prepare() {
+    if (this.packageVersion === 'latest') {
+      this.packageVersion = await getNpmLatestVersion(this.packageName);
+    }
+    console.log(this.packageVersion, '最新的版本');
+  }
+
   // 判断当前package是否存在
-  exists() {
+  async exists() {
+    // 处于缓存模式
+    if (this.storeDir) {
+      await this.prepare();
+    } else {
+      return pathExists(this.targetPath);
+    }
 
   }
 
