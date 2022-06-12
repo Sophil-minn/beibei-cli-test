@@ -21,7 +21,7 @@ async function exec() {
   const cmdName = cmdObj._name;
   console.log(cmdObj.opts().force, cmdObj._name, 'force');
   const packageName = SETTINGS[cmdName];
-  const packageVersion = '1.1.0';
+  const packageVersion = 'latest';
 
 
   if(!targetPath) {

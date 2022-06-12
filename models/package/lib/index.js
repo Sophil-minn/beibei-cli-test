@@ -50,7 +50,7 @@ class Package {
     return path.resolve(this.storeDir, `_${this.cacheFilePathPrefix}@${this.packageVersion}@${this.packageName}`);
   }
 
-  getSpecificCacheFilePath (packageVersion) {
+  getSpecificCacheFilePath(packageVersion) {
     return path.resolve(this.storeDir, `_${this.cacheFilePathPrefix}@${packageVersion}@${this.packageName}`);
   }
 
@@ -79,7 +79,7 @@ class Package {
         { name: this.packageName, version: this.packageVersion }
       ]
     })
-    
+
   }
 
   // 更新package
@@ -92,7 +92,7 @@ class Package {
     const latestFilePath = this.getSpecificCacheFilePath(latestPackageVersion);
     console.log(latestFilePath, 'latestFilePath');
     // 3. 如果不存在，则直接安装最新版本
-    if(!pathExists(latestFilePath)) {
+    if (!pathExists(latestFilePath)) {
       console.log('我需要更新package');
       await npminstall({
         root: this.targetPath,
@@ -110,21 +110,30 @@ class Package {
 
   // 获取入口文件的路径
   getRootFilePath() {
-    // 1、获取package.json所在目录- pkg-dir
-    // console.log(await packageDirectory(this.targetPath));
-    const dir = pkgDir(this.targetPath);
-    // console.log(dir, 'dir');
-    if (dir) {
-      // 2、读取package.json
-      const pkgFile = require(path.resolve(dir, 'package.json'));
-      // 3、寻找main/lib
-      if (pkgFile && pkgFile?.main) {
-        // 4、路径的兼容（macOS/windows）
-        return formatPath(path.resolve(dir, pkgFile.main));
+    function _getRootFile(targetPath){
+      // 1、获取package.json所在目录- pkg-dir
+      // console.log(await packageDirectory(this.targetPath));
+      const dir = pkgDir(targetPath);
+      // console.log(dir, 'dir');
+      if (dir) {
+        // 2、读取package.json
+        const pkgFile = require(path.resolve(dir, 'package.json'));
+        // 3、寻找main/lib
+        if (pkgFile && pkgFile?.main) {
+          // 4、路径的兼容（macOS/windows）
+          return formatPath(path.resolve(dir, pkgFile.main));
+        }
       }
+      return null;
     }
-
-    return null;
+    // 使用缓存的时候
+    if (this.storeDir) {
+      return _getRootFile(this.cacheFilePath);
+    } 
+    // 不使用缓存的时候
+    else {
+      return _getRootFile(this.targetPath);
+    }
   }
 }
 
