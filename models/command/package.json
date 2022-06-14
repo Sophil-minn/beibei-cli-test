@@ -27,6 +27,7 @@
     "url": "https://github.com/Sophil-minn/beibei-cli-test/issues"
   },
   "dependencies": {
+    "@snowlepoard520/log": "file:../../utils/log",
     "colors": "^1.4.0",
     "semver": "^7.3.7"
   }

@@ -34,7 +34,7 @@ async function core() {
 
 function registerCommand() {
   program
-    .name(Object.keys(pkg.bin)[0])
+    .name(`${Object.keys(pkg.bin)[0]}----minnnn`)
     .usage('<command> [options]')
     .version(pkg.version)
     .option('-d, --debug', '是否开启调试模式', false)
@@ -46,18 +46,18 @@ function registerCommand() {
       .action(exec)
 
     program.on('option:debug', function() {
-      log.verbose('test',34567, log);
+      // log.verbose('test',34567, log);
       if (program.opts().debug) {
         process.env.LOG_LEVEL = 'verbose';
       } else {
         process.env.LOG_LEVEL = 'info';
       }
       log.level = process.env.LOG_LEVEL;
-      log.verbose('test', 'program.on');
+      // log.verbose('test', 'program.on');
     });
 
     program.on('option:targetPath', function() {
-      console.log(program.opts(), 'program.opts()');
+      // console.log(program.opts(), 'program.opts()');
       process.env.CLI_TARGET_PATH = program.opts().targetPath;
       // console.log('targetPathtargetPath');
       // console.log(program.opts().targetPath, 'program');
@@ -76,10 +76,10 @@ function registerCommand() {
     });
 
     if(process.argv.length < 3) {
-      program.outputHelp();
+      // program.outputHelp();
     }
     if(program.args && program.args.length < 1) {
-      program.outputHelp();
+      // program.outputHelp();
     }
   
     program.parse(process.argv);
@@ -93,7 +93,7 @@ async function prepare() {
   checkRoot(); 
   checkUserHome(); 
   // checkInputArgs();
-  log.verbose('debugg', 'test debub log');
+  // log.verbose('debugg', 'test debub log');
   checkEnv();
   await checkGlobalUpdate();
 }
@@ -113,16 +113,16 @@ async function checkGlobalUpdate() {
   // console.log(newVersion, 'newVersion');
   // 获取最新的版本号，提示用户更新到该版本
   if (lastVersion && semver.gt(lastVersion, currentVersion)) {
-    log.warn(colors.yellow(`请手动更新${npmName}, 当前版本：${currentVersion} ， 最新版本： ${lastVersion}
-    更新命令： npm install -g ${npmName}
-    `));
+    // log.warn(colors.yellow(`请手动更新${npmName}, 当前版本：${currentVersion} ， 最新版本： ${lastVersion}
+    // 更新命令： npm install -g ${npmName}
+    // `));
   }
 }
 
 
 function checkPkgVersion() {
   // TODO
-  console.log( '版本号 ：', pkg.version);
+  // console.log( '版本号 ：', pkg.version);
 }
 
 function checkUserHome() {

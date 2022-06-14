@@ -15,11 +15,11 @@ async function exec() {
   const homePath = process.env.CLI_HOME_PATH;
   let storeDir = '';
   let pkg = '';
-  log.verbose('targetPath', targetPath);
-  log.verbose('homePath', homePath);
+  // log.verbose('targetPath', targetPath);
+  // log.verbose('homePath', homePath);
   const cmdObj = arguments[arguments.length - 1];
   const cmdName = cmdObj._name;
-  console.log(cmdObj.opts().force, cmdObj._name, 'force');
+  // console.log(cmdObj.opts().force, cmdObj._name, 'force');
   const packageName = SETTINGS[cmdName];
   const packageVersion = 'latest';
 
