@@ -50,13 +50,14 @@ async function exec() {
     });
   }
 
-  console.log('npminstall @@@@@@@', await pkg.exists());
+  // console.log('npminstall @@@@@@@', await pkg.exists());
   const rootFile = pkg.getRootFilePath();
-  console.log(rootFile,  'rootFilerootFilerootFile');
+  // console.log(rootFile,  'rootFilerootFilerootFile');
   if (rootFile) {
-    console.log(888);
     try {
-      require(rootFile).apply(null, arguments);
+      // 当前进程中调用，无法充分利用CPU资源
+      require(rootFile).call(null, Array.from(arguments));
+      // 改造成 在node子进程中调用，可以额外的获取更多的CPU资源， 以便获得更高的性能
     } catch (error) {
       // console.log(error, 'error');
     }

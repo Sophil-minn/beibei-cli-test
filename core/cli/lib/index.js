@@ -4,6 +4,7 @@ module.exports = core;
 
 const path = require('path');
 const semver = require('semver');
+
 const colors = require('colors/safe');
 const userHome = require('user-home');
 const pathExists = require('path-exists').sync;
@@ -12,7 +13,6 @@ const pathExists = require('path-exists').sync;
 const pkg = require('../package.json');
 const commander = require('commander');
 const log = require('@snowlepoard520/log');
-const init = require('@snowlepoard520/init');
 const exec = require('@snowlepoard520/exec');
 const constant = require('./const');
 
@@ -89,11 +89,11 @@ function registerCommand() {
 
 async function prepare() {
   checkPkgVersion();
-  checkNodeVersion();
+  
   checkRoot(); 
   checkUserHome(); 
   // checkInputArgs();
-  // log.verbose('debugg', 'test debub log');
+  log.verbose('debugg', 'test debub log');
   checkEnv();
   await checkGlobalUpdate();
 }
@@ -138,17 +138,7 @@ function checkRoot() {
   rootCheck(); // root 降级
 }
 
-function checkNodeVersion() {
-  // 获取当前node版本号
-  const currentVersion = process.version;
-  // 比对最低版本号
-  const lowestVersion = constant.LOWEST_NODE_VERSION;
-  if(semver.gte(currentVersion, lowestVersion)) {
-    // throw new Error(colors.red(`beibei-cli 需要安装${lowestVersion}以上版本的Node.js`))
-  } else {
-    // throw new Error(colors.red(`beibei-cli 需要安装${lowestVersion}以下版本的Node.js`))
-  }
-}
+
 
 
 function checkEnv() {
