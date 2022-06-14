@@ -57,9 +57,19 @@ async function exec() {
   if (rootFile) {
     try {
       // 当前进程中调用，无法充分利用CPU资源
-      require(rootFile).call(null, Array.from(arguments));
+      // require(rootFile).call(null, Array.from(arguments));
       // 改造成 在node子进程中调用，可以额外的获取更多的CPU资源， 以便获得更高的性能
-      const code = 'console.log(1)';
+      const args =  Array.from(arguments);
+      const cmd = args[args.length -1];
+      const o = Object.create(null);
+      Object.keys(cmd).forEach(key => {
+        if (cmd.hasOwnProperty(key) && !key.startsWith('_') && key !== 'parent') {
+          o[key] = cmd[key];
+        }
+      });
+      args[args.length - 1] = o;
+      // console.log(cmd, 'cmd');
+      const code = ` require(${rootFile}).call(null, ${JSON.stringify(args)});`;
       const child = cp.spawn('node', ['-e', code], {
         cwd: process.cwd(),
         stdio: 'inherit'
