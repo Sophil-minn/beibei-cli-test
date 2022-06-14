@@ -1,5 +1,6 @@
 'use strict';
 
+const cp = require('child_process');
 const path = require('path');
 const Package = require('@snowlepoard520/package');
 const log = require('@snowlepoard520/log');
@@ -24,7 +25,7 @@ async function exec() {
   const packageVersion = 'latest';
 
 
-  if(!targetPath) {
+  if (!targetPath) {
     // 生成缓存路径
     targetPath = path.resolve(homePath, CACHE_DIR);
     storeDir = path.resolve(targetPath, 'node_modules');
@@ -35,7 +36,7 @@ async function exec() {
       packageName,
       packageVersion
     });
-    if(await pkg.exists()) {
+    if (await pkg.exists()) {
       // 更新package
       await pkg.update();
     } else {
@@ -58,6 +59,25 @@ async function exec() {
       // 当前进程中调用，无法充分利用CPU资源
       require(rootFile).call(null, Array.from(arguments));
       // 改造成 在node子进程中调用，可以额外的获取更多的CPU资源， 以便获得更高的性能
+      const code = 'console.log(1)';
+      const child = cp.spawn('node', ['-e', code], {
+        cwd: process.cwd(),
+        stdio: 'inherit'
+      });
+      child.on('error', e => {
+        log.error(e.message);
+        process.exit(1);
+      });
+      child.on('exit', e => {
+        log.verbose('命令执行成功：' + e );
+        process.exit(e);
+      });
+      // child.stdout.on('data', function (chunk) {
+      //   console.log('stdout', chunk.toString());
+      // });
+      // child.stderr.on('data', function (chunk) {
+      //   console.log('stderr', chunk.toString());
+      // });
     } catch (error) {
       console.log(error, 'error');
     }
@@ -65,7 +85,7 @@ async function exec() {
     // require(rootFile).apply(null, arguments);
   }
   // const dir = pkg.getRootFilePath();
-  
+
   // console.log(pkg, 1234);
   // console.log(dir, 111);
 }
