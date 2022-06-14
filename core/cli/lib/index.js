@@ -26,6 +26,7 @@ let config;
 async function core() {
   try {
     await prepare();
+    console.log(3333);
     registerCommand();
   } catch (error) {
     log.error(error.message);
@@ -61,7 +62,7 @@ function registerCommand() {
       process.env.CLI_TARGET_PATH = program.opts().targetPath;
       // console.log('targetPathtargetPath');
       // console.log(program.opts().targetPath, 'program');
-      // log.verbose('test', 'targetPath');
+      log.verbose('test', 'targetPath');
     });
 
 
@@ -81,7 +82,7 @@ function registerCommand() {
     if(program.args && program.args.length < 1) {
       // program.outputHelp();
     }
-  
+    // console.log(program, ' program');
     program.parse(process.argv);
   
 
