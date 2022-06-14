@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@snowlepoard520/log": "file:../../utils/log",
+    "@snowlepoard520/utils": "file:../../utils/utils",
     "colors": "^1.4.0",
     "semver": "^7.3.7"
   }

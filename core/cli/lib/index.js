@@ -26,7 +26,7 @@ let config;
 async function core() {
   try {
     await prepare();
-    console.log(3333);
+    // console.log(3333);
     registerCommand();
   } catch (error) {
     log.error(error.message);
