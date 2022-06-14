@@ -70,7 +70,8 @@ async function exec() {
       args[args.length - 1] = o;
       // console.log(cmd, 'cmd');
       const code = ` require(${rootFile}).call(null, ${JSON.stringify(args)});`;
-      const child = cp.spawn('node', ['-e', code], {
+      // win sp.spawn('cmd', ['/c', 'node, '-e', code]);
+      const child = spawn('node', ['-e', code], {
         cwd: process.cwd(),
         stdio: 'inherit'
       });
@@ -89,7 +90,7 @@ async function exec() {
       //   console.log('stderr', chunk.toString());
       // });
     } catch (error) {
-      console.log(error, 'error');
+      console.log(error, 'error');/*  */
     }
     // console.log( require(rootFile), ' require(rootFile)');
     // require(rootFile).apply(null, arguments);
@@ -98,6 +99,14 @@ async function exec() {
 
   // console.log(pkg, 1234);
   // console.log(dir, 111);
+}
+
+function spawn (command, args, options) {
+  //兼容windows系统
+  const win32 = process.platform === 'win32';
+  const cmd = win32 ? 'cmd': command;
+  const cmdArgs = win32 ? ['/c'].concat(command, args) : args;
+  return cp.spawn(cmd, cmdArgs, options || {});
 }
 
 module.exports = exec;
