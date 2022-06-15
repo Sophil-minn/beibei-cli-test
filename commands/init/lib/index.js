@@ -7,7 +7,7 @@ class InitCommand extends Command {
 
   init() {
     this.projectName = this._argv[0] || '没有名字的projectName';
-    this.force = !!this._cmd._optionValues.force;
+    this.force = !!this._cmd?._optionValues?.force;
     log.verbose('this.projectName', this.projectName);
     log.verbose(this.force, 'force');
   }
