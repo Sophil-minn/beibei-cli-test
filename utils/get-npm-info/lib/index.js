@@ -8,7 +8,7 @@ const semver = require('semver');
 const testUrl = '@imooc-cli/core'
 
 function getNpmInfo(npmName, registry) {
-  console.log(npmName, 'npmName');
+  // console.log(npmName, 'npmName');
   if(!npmName) {
     return null;
   }

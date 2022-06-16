@@ -4,6 +4,7 @@ module.exports = core;
 
 const path = require('path');
 const semver = require('semver');
+
 const colors = require('colors/safe');
 const userHome = require('user-home');
 const pathExists = require('path-exists').sync;
@@ -12,7 +13,6 @@ const pathExists = require('path-exists').sync;
 const pkg = require('../package.json');
 const commander = require('commander');
 const log = require('@snowlepoard520/log');
-const init = require('@snowlepoard520/init');
 const exec = require('@snowlepoard520/exec');
 const constant = require('./const');
 
@@ -26,6 +26,7 @@ let config;
 async function core() {
   try {
     await prepare();
+    // console.log(3333);
     registerCommand();
   } catch (error) {
     log.error(error.message);
@@ -34,7 +35,7 @@ async function core() {
 
 function registerCommand() {
   program
-    .name(Object.keys(pkg.bin)[0])
+    .name(`${Object.keys(pkg.bin)[0]}----minnnn`)
     .usage('<command> [options]')
     .version(pkg.version)
     .option('-d, --debug', '是否开启调试模式', false)
@@ -46,22 +47,22 @@ function registerCommand() {
       .action(exec)
 
     program.on('option:debug', function() {
-      log.verbose('test',34567, log);
+      // log.verbose('test',34567, log);
       if (program.opts().debug) {
         process.env.LOG_LEVEL = 'verbose';
       } else {
         process.env.LOG_LEVEL = 'info';
       }
       log.level = process.env.LOG_LEVEL;
-      log.verbose('test', 'program.on');
+      // log.verbose('test', 'program.on');
     });
 
     program.on('option:targetPath', function() {
-      console.log(program.opts(), 'program.opts()');
+      // console.log(program.opts(), 'program.opts()');
       process.env.CLI_TARGET_PATH = program.opts().targetPath;
       // console.log('targetPathtargetPath');
       // console.log(program.opts().targetPath, 'program');
-      // log.verbose('test', 'targetPath');
+      log.verbose('test', 'targetPath');
     });
 
 
@@ -76,12 +77,12 @@ function registerCommand() {
     });
 
     if(process.argv.length < 3) {
-      program.outputHelp();
+      // program.outputHelp();
     }
     if(program.args && program.args.length < 1) {
-      program.outputHelp();
+      // program.outputHelp();
     }
-  
+    // console.log(program, ' program');
     program.parse(process.argv);
   
 
@@ -89,7 +90,7 @@ function registerCommand() {
 
 async function prepare() {
   checkPkgVersion();
-  checkNodeVersion();
+  
   checkRoot(); 
   checkUserHome(); 
   // checkInputArgs();
@@ -113,16 +114,16 @@ async function checkGlobalUpdate() {
   // console.log(newVersion, 'newVersion');
   // 获取最新的版本号，提示用户更新到该版本
   if (lastVersion && semver.gt(lastVersion, currentVersion)) {
-    log.warn(colors.yellow(`请手动更新${npmName}, 当前版本：${currentVersion} ， 最新版本： ${lastVersion}
-    更新命令： npm install -g ${npmName}
-    `));
+    // log.warn(colors.yellow(`请手动更新${npmName}, 当前版本：${currentVersion} ， 最新版本： ${lastVersion}
+    // 更新命令： npm install -g ${npmName}
+    // `));
   }
 }
 
 
 function checkPkgVersion() {
   // TODO
-  console.log( '版本号 ：', pkg.version);
+  // console.log( '版本号 ：', pkg.version);
 }
 
 function checkUserHome() {
@@ -138,17 +139,7 @@ function checkRoot() {
   rootCheck(); // root 降级
 }
 
-function checkNodeVersion() {
-  // 获取当前node版本号
-  const currentVersion = process.version;
-  // 比对最低版本号
-  const lowestVersion = constant.LOWEST_NODE_VERSION;
-  if(semver.gte(currentVersion, lowestVersion)) {
-    // throw new Error(colors.red(`beibei-cli 需要安装${lowestVersion}以上版本的Node.js`))
-  } else {
-    // throw new Error(colors.red(`beibei-cli 需要安装${lowestVersion}以下版本的Node.js`))
-  }
-}
+
 
 
 function checkEnv() {
