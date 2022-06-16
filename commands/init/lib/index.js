@@ -22,8 +22,9 @@ class InitCommand extends Command {
   async exec() {
     try {
       // 1，准备阶段
-      const ret = await this.prepare();
-      if (ret) {
+      const projectInfo = await this.prepare();
+      if (projectInfo) {
+        log.verbose('projectInfo', projectInfo);
         // 2、下载模板
         // 3、安装模板
       }
@@ -78,7 +79,7 @@ class InitCommand extends Command {
     let projectInfo = {};
     let isProjectNameValid = false;
     if (isValidName(this.projectName)) {
-      isProjectNameValid = true;
+      // isProjectNameValid = true;
       projectInfo.projectName = this.projectName;
     }
     // 1、选择创建项目或组件
