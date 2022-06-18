@@ -165,7 +165,14 @@ class InitCommand extends Command {
           return v;
         }
       },
-    });
+    },
+    {
+      type: 'list',
+      name: 'projectTemplate',
+      message: `请选择${title}模板`,
+      choices: this.createTemplateChoice(),
+    }
+    );
     if (type === TYPE_PROJECT) {
       // 2. 获取项目的基本信息
       const project = await inquirer.prompt(projectPrompt);
@@ -219,7 +226,12 @@ class InitCommand extends Command {
     // console.log(fileList, 'fileList');
     return !fileList || fileList.length <= 0;
   }
-
+  createTemplateChoice() {
+    return this.template.map(item => ({
+      value: item.npmName,
+      name: item.name,
+    }));
+  }
 }
 
 function init(argv) {
