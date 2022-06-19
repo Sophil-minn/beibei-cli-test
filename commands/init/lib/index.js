@@ -15,6 +15,9 @@ const getProjectTemplate = require('./getProjectTemplate');
 const TYPE_PROJECT = 'project';
 const TYPE_COMPONENT = 'component';
 
+const TEMPLATE_TYPE_NORMAL = 'normal';
+const TEMPLATE_TYPE_CUSTOM = 'custom';
+
 class InitCommand extends Command {
 
   init() {
@@ -34,12 +37,40 @@ class InitCommand extends Command {
         this.projectInfo = projectInfo;
         await this.downloadTemplate();
         // 3、安装模板
+        await this.installTemplate();
       }
      
     } catch (e) {
       log.error(e.message)
     }
 
+  }
+
+  async installTemplate () {
+    log.verbose('templateInfo', this.templateInfo);
+    if (this.templateInfo) {
+      if (!this.templateInfo.type) {
+        this.templateInfo.type = TEMPLATE_TYPE_NORMAL;
+      }
+      if (this.templateInfo.type === TEMPLATE_TYPE_NORMAL) {
+        // 标准安装
+        await this.installNormalTemplate();
+      } else if (this.templateInfo.type === TEMPLATE_TYPE_CUSTOM) {
+        // 自定义安装
+        await this.installCustomTemplate();
+      } else {
+        throw new Error('无法识别项目模板类型！');
+      }
+    } else {
+      throw new Error('项目模板信息不存在！');
+    }
+  }
+
+  async installNormalTemplate() {
+    log.verbose('安装标准模板');
+  }
+  async installCustomTemplate() {
+    log.verbose('安装自定义模板');
   }
 
   async downloadTemplate() {
@@ -77,7 +108,8 @@ class InitCommand extends Command {
         throw error;
       } finally {
         this.templateNpm = templateNpm;
-        console.log('安装 end');
+        console.log('安装 end', templateNpm);
+        spinner.stop(true);
       }
     } else {
       console.log('更新 start');
@@ -149,7 +181,7 @@ class InitCommand extends Command {
     let projectInfo = {};
     let isProjectNameValid = false;
     if (isValidName(this.projectName)) {
-      // isProjectNameValid = true;
+      isProjectNameValid = true;
       projectInfo.projectName = this.projectName;
     }
     // 1、选择创建项目或组件
