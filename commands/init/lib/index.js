@@ -59,7 +59,7 @@ class InitCommand extends Command {
         // 自定义安装
         await this.installCustomTemplate();
       } else {
-        throw new Error('无法识别项目模板类型！');
+        throw new Error('无法识别项目模板类型！安装已终止');
       }
     } else {
       throw new Error('项目模板信息不存在！');
@@ -68,6 +68,24 @@ class InitCommand extends Command {
 
   async installNormalTemplate() {
     log.verbose('安装标准模板');
+    // console.log(this.templateNpm, 'this.templateNpm');
+    console.log(this.templateNpm.cacheFilePath, 'this.templateNpm.cacheFilePath 缓存路径');
+    // 拷贝模板代码至当前目录
+    let spinner = spinnerStart('正在安装模板...');
+    await sleep();
+    const targetPath = process.cwd();
+    try {
+      const templatePath = path.resolve(this.templateNpm.cacheFilePath, 'template');
+      fse.ensureDirSync(templatePath);
+      fse.ensureDirSync(targetPath);
+      fse.copySync(templatePath, targetPath);
+    } catch (e) {
+      throw e;
+    } finally {
+      spinner.stop(true);
+      log.success('模板安装成功');
+    }  
+    
   }
   async installCustomTemplate() {
     log.verbose('安装自定义模板');
@@ -103,6 +121,7 @@ class InitCommand extends Command {
       try {
         await templateNpm.install();
         spinner.stop(true);
+        this.templateNpm = templateNpm;
         log.success('下载模板成功');
       } catch (error) {
         throw error;
@@ -110,6 +129,7 @@ class InitCommand extends Command {
         this.templateNpm = templateNpm;
         console.log('安装 end', templateNpm);
         spinner.stop(true);
+        this.templateNpm = templateNpm;
       }
     } else {
       console.log('更新 start');
