@@ -29,9 +29,12 @@
   "dependencies": {
     "@snowlepoard520/command": "file:../../models/command",
     "@snowlepoard520/log": "file:../../utils/log",
+    "@snowlepoard520/package": "file:../../models/package",
     "@snowlepoard520/request": "file:../../utils/request",
+    "@snowlepoard520/utils": "file:../../utils/utils",
     "fs-extra": "^10.1.0",
     "inquirer": "^8.2.4",
-    "semver": "^7.3.7"
+    "semver": "^7.3.7",
+    "user-home": "^3.0.0"
   }
 }

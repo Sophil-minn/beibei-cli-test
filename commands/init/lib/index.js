@@ -4,8 +4,11 @@ const fs = require('fs');
 const inquirer = require('inquirer');
 const fse = require('fs-extra');
 const semver = require('semver');
+const userHome = require('user-home');
 const Command = require('@snowlepoard520/command');
+const Package = require('@snowlepoard520/package');
 const log = require('@snowlepoard520/log');
+const { spinnerStart, sleep } = require('@snowlepoard520/utils');
 
 const getProjectTemplate = require('./getProjectTemplate');
 
@@ -29,7 +32,7 @@ class InitCommand extends Command {
         log.verbose(111, projectInfo);
         // 2、下载模板
         this.projectInfo = projectInfo;
-        this.downloadTemplate();
+        await this.downloadTemplate();
         // 3、安装模板
       }
      
@@ -39,13 +42,60 @@ class InitCommand extends Command {
 
   }
 
-  downloadTemplate() {
+  async downloadTemplate() {
     // 1，通过项目模板API获取项目模板信息
     // 1.1， 通过egg.js搭建一套后端系统
     // 1.2 通过npm 存储项目模板
     // 1.3 将项目模板存储到mongodb数据库中
     // 1.4 通过egg.js获取mongodb中的数据 并且通过API返回
-
+    // console.log(this.template, '模板信息');
+    // console.log(this.projectInfo, '项目信息');
+    const { projectTemplate } = this.projectInfo;
+    const templateInfo = this.template.find(item => item.npmName === projectTemplate);
+    const { npmName, version } = templateInfo;
+    // console.log(userHome, 'userHome');
+    const targetPath = path.resolve(userHome, '.beibei-cli-dev', 'template');
+    const storeDir = path.resolve(userHome, '.beibei-cli-dev', 'template', 'node_modules');
+    this.templateInfo = templateInfo;
+    const templateNpm = new Package({
+      targetPath,
+      storeDir,
+      packageName: npmName,
+      packageVersion: version,
+    });
+    console.log(targetPath, storeDir,npmName, version, templateNpm );
+    // 如果不存在直接安装npm， 如果存在直接更新
+    if (!await templateNpm.exists()) {
+      console.log('安装 start');
+      const spinner = spinnerStart('正在下载模板...');
+      await sleep(5000);
+      try {
+        await templateNpm.install();
+        spinner.stop(true);
+        log.success('下载模板成功');
+      } catch (error) {
+        throw error;
+      } finally {
+        this.templateNpm = templateNpm;
+        console.log('安装 end');
+      }
+    } else {
+      console.log('更新 start');
+      const spinner = spinnerStart('正在更新模板...');
+      await sleep(5000);
+      try {
+        await templateNpm.update();
+      } catch (error) {
+        throw error;
+      } finally {
+        spinner.stop(true);
+      if (await templateNpm.exists()) {
+        log.success('更新模板成功');
+        this.templateNpm = templateNpm;
+      }
+      console.log('更新后');
+      }
+    }
   }
 
   async prepare() {
