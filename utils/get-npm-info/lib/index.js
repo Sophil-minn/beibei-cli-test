@@ -14,7 +14,8 @@ function getNpmInfo(npmName, registry) {
   }
   const registryUrl = registry || getDefaultRegistry();
   const testUrl = '@imooc-cli/core'
-  const npmInfoUrl = urlJoin(registryUrl, testUrl);
+  const npmInfoUrl = urlJoin(registryUrl, npmName || testUrl);
+  console.log(npmInfoUrl, 'npmInfoUrl');
   return axios.get(npmInfoUrl).then(response => {
     if(response.status === 200) {
       // console.log(response, 'response');
@@ -63,6 +64,7 @@ async function getNpmSemverVersions(baseVersion, npmName, registry) {
 
 async function getNpmLatestVersion(npmName, registry) {
   let versions = await getNpmVersions(npmName, registry);
+  console.log(versions, '可用的版本号list', npmName);
   if (versions) {
     return versions.sort(
       (a, b) => {

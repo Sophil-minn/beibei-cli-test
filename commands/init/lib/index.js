@@ -4,8 +4,13 @@ const fs = require('fs');
 const inquirer = require('inquirer');
 const fse = require('fs-extra');
 const semver = require('semver');
+const userHome = require('user-home');
 const Command = require('@snowlepoard520/command');
+const Package = require('@snowlepoard520/package');
 const log = require('@snowlepoard520/log');
+const { spinnerStart, sleep } = require('@snowlepoard520/utils');
+
+const getProjectTemplate = require('./getProjectTemplate');
 
 const TYPE_PROJECT = 'project';
 const TYPE_COMPONENT = 'component';
@@ -22,9 +27,12 @@ class InitCommand extends Command {
   async exec() {
     try {
       // 1，准备阶段
-      const ret = await this.prepare();
-      if (ret) {
+      const projectInfo = await this.prepare();
+      if (projectInfo) {
+        log.verbose(111, projectInfo);
         // 2、下载模板
+        this.projectInfo = projectInfo;
+        await this.downloadTemplate();
         // 3、安装模板
       }
      
@@ -33,7 +41,70 @@ class InitCommand extends Command {
     }
 
   }
+
+  async downloadTemplate() {
+    // 1，通过项目模板API获取项目模板信息
+    // 1.1， 通过egg.js搭建一套后端系统
+    // 1.2 通过npm 存储项目模板
+    // 1.3 将项目模板存储到mongodb数据库中
+    // 1.4 通过egg.js获取mongodb中的数据 并且通过API返回
+    // console.log(this.template, '模板信息');
+    // console.log(this.projectInfo, '项目信息');
+    const { projectTemplate } = this.projectInfo;
+    const templateInfo = this.template.find(item => item.npmName === projectTemplate);
+    const { npmName, version } = templateInfo;
+    // console.log(userHome, 'userHome');
+    const targetPath = path.resolve(userHome, '.beibei-cli-dev', 'template');
+    const storeDir = path.resolve(userHome, '.beibei-cli-dev', 'template', 'node_modules');
+    this.templateInfo = templateInfo;
+    const templateNpm = new Package({
+      targetPath,
+      storeDir,
+      packageName: npmName,
+      packageVersion: version,
+    });
+    console.log(targetPath, storeDir,npmName, version, templateNpm );
+    // 如果不存在直接安装npm， 如果存在直接更新
+    if (!await templateNpm.exists()) {
+      console.log('安装 start');
+      const spinner = spinnerStart('正在下载模板...');
+      await sleep(5000);
+      try {
+        await templateNpm.install();
+        spinner.stop(true);
+        log.success('下载模板成功');
+      } catch (error) {
+        throw error;
+      } finally {
+        this.templateNpm = templateNpm;
+        console.log('安装 end');
+      }
+    } else {
+      console.log('更新 start');
+      const spinner = spinnerStart('正在更新模板...');
+      await sleep(5000);
+      try {
+        await templateNpm.update();
+      } catch (error) {
+        throw error;
+      } finally {
+        spinner.stop(true);
+      if (await templateNpm.exists()) {
+        log.success('更新模板成功');
+        this.templateNpm = templateNpm;
+      }
+      console.log('更新后');
+      }
+    }
+  }
+
   async prepare() {
+    // 判断项目模板是否存在
+    const template = await getProjectTemplate();
+    if (!template || template.length === 0) {
+      throw new Error('项目模板不存在');
+    }
+    this.template = template;
     // 1，判断当前目录是否为空
     const localPath = process.cwd();
     const ret = this.isDirEmpty(localPath);
@@ -78,7 +149,7 @@ class InitCommand extends Command {
     let projectInfo = {};
     let isProjectNameValid = false;
     if (isValidName(this.projectName)) {
-      isProjectNameValid = true;
+      // isProjectNameValid = true;
       projectInfo.projectName = this.projectName;
     }
     // 1、选择创建项目或组件
@@ -144,7 +215,14 @@ class InitCommand extends Command {
           return v;
         }
       },
-    });
+    },
+    {
+      type: 'list',
+      name: 'projectTemplate',
+      message: `请选择${title}模板`,
+      choices: this.createTemplateChoice(),
+    }
+    );
     if (type === TYPE_PROJECT) {
       // 2. 获取项目的基本信息
       const project = await inquirer.prompt(projectPrompt);
@@ -198,7 +276,12 @@ class InitCommand extends Command {
     // console.log(fileList, 'fileList');
     return !fileList || fileList.length <= 0;
   }
-
+  createTemplateChoice() {
+    return this.template.map(item => ({
+      value: item.npmName,
+      name: item.name,
+    }));
+  }
 }
 
 function init(argv) {
