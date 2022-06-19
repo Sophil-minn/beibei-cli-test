@@ -1,9 +1,9 @@
 'use strict';
 
-const cp = require('child_process');
 const path = require('path');
 const Package = require('@snowlepoard520/package');
 const log = require('@snowlepoard520/log');
+const { exec: spawn } = require('@snowlepoard520/utils');
 
 const SETTINGS = {
   init: '@imooc-cli/init'
@@ -104,13 +104,13 @@ async function exec() {
 
   // console.log(pkg, 1234);
   // console.log(dir, 111);
-  function spawn (command, args, options) {
-    //兼容windows系统
-    const win32 = process.platform === 'win32';
-    const cmd = win32 ? 'cmd': command;
-    const cmdArgs = win32 ? ['/c'].concat(command, args) : args;
-    return cp.spawn(cmd, cmdArgs, options || {});
-  }
+  // function spawn (command, args, options) {
+  //   //兼容windows系统
+  //   const win32 = process.platform === 'win32';
+  //   const cmd = win32 ? 'cmd': command;
+  //   const cmdArgs = win32 ? ['/c'].concat(command, args) : args;
+  //   return cp.spawn(cmd, cmdArgs, options || {});
+  // }
   
 }
 

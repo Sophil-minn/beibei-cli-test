@@ -8,7 +8,7 @@ const userHome = require('user-home');
 const Command = require('@snowlepoard520/command');
 const Package = require('@snowlepoard520/package');
 const log = require('@snowlepoard520/log');
-const { spinnerStart, sleep } = require('@snowlepoard520/utils');
+const { spinnerStart, sleep, execAsync } = require('@snowlepoard520/utils');
 
 const getProjectTemplate = require('./getProjectTemplate');
 
@@ -17,6 +17,8 @@ const TYPE_COMPONENT = 'component';
 
 const TEMPLATE_TYPE_NORMAL = 'normal';
 const TEMPLATE_TYPE_CUSTOM = 'custom';
+
+const WHITE_COMMAND = ['npm', 'cnpm'];
 
 class InitCommand extends Command {
 
@@ -66,10 +68,39 @@ class InitCommand extends Command {
     }
   }
 
+  checkCommand(cmd) {
+    if (WHITE_COMMAND.includes(cmd)) {
+      return cmd;
+    }
+    return null;
+  }
+
+  async execCommand(command, errMsg) {
+    let ret;
+    if (command) {
+      const cmdArray = command.split(' ');
+      const cmd = this.checkCommand(cmdArray[0]);
+      if (!cmd) {
+        throw new Error('命令不存在！命令：' + command);
+      }
+      const args = cmdArray.slice(1);
+      console.log(cmd, args, 'cmd, argscmd, args');
+      ret = await execAsync(cmd, args, {
+        stdio: 'inherit',
+        cwd: process.cwd(),
+      });
+    }
+    log.verbose(ret, command + '执行成功');
+    if (ret !== 0) {
+      throw new Error(errMsg);
+    }
+    return ret;
+  }
+
   async installNormalTemplate() {
     log.verbose('安装标准模板');
-    // console.log(this.templateNpm, 'this.templateNpm');
-    console.log(this.templateNpm.cacheFilePath, 'this.templateNpm.cacheFilePath 缓存路径');
+    console.log(this.templateNpm, 'this.templateNpm');
+    // console.log(this.templateNpm.cacheFilePath, 'this.templateNpm.cacheFilePath 缓存路径');
     // 拷贝模板代码至当前目录
     let spinner = spinnerStart('正在安装模板...');
     await sleep();
@@ -85,6 +116,12 @@ class InitCommand extends Command {
       spinner.stop(true);
       log.success('模板安装成功');
     }  
+    // 安装依赖
+    const { installCommand, startCommnand } = this.templateInfo;
+    // 依赖安装
+    await this.execCommand(installCommand, '依赖安装失败！');
+    // 启动命令执行
+    await this.execCommand(startCommnand, '启动执行命令失败！');
     
   }
   async installCustomTemplate() {
@@ -98,7 +135,8 @@ class InitCommand extends Command {
     // 1.3 将项目模板存储到mongodb数据库中
     // 1.4 通过egg.js获取mongodb中的数据 并且通过API返回
     // console.log(this.template, '模板信息');
-    // console.log(this.projectInfo, '项目信息');
+    console.log(this.projectInfo, '我填写的项目信息');
+    const { packageVersion: myCustomVersion } = this.projectInfo;
     const { projectTemplate } = this.projectInfo;
     const templateInfo = this.template.find(item => item.npmName === projectTemplate);
     const { npmName, version } = templateInfo;
@@ -111,6 +149,7 @@ class InitCommand extends Command {
       storeDir,
       packageName: npmName,
       packageVersion: version,
+      myCustomVersion
     });
     console.log(targetPath, storeDir,npmName, version, templateNpm );
     // 如果不存在直接安装npm， 如果存在直接更新

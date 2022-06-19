@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@snowlepoard520/package": "file:../../models/package",
-    "@snowlepoard520/log": "file:../../utils/log"
+    "@snowlepoard520/log": "file:../../utils/log",
+    "@snowlepoard520/utils": "file:../../utils/utils"
   }
 }
