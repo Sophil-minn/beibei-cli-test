@@ -5,6 +5,8 @@ const inquirer = require('inquirer');
 const fse = require('fs-extra');
 const semver = require('semver');
 const userHome = require('user-home');
+const glob = require('glob');
+const ejs = require('ejs');
 const Command = require('@snowlepoard520/command');
 const Package = require('@snowlepoard520/package');
 const log = require('@snowlepoard520/log');
@@ -98,6 +100,40 @@ class InitCommand extends Command {
     return ret;
   }
 
+  async ejsRender(options) {
+    const dir = process.cwd();
+    const projectInfo = this.projectInfo;
+    return new Promise((resolve, reject) => {
+      glob('**', {
+        cwd: dir,
+        ignore: options.ignore || '',
+        nodir: true,
+      }, function(err, files) {
+        console.log(files, 'files-----');
+        if (err) {
+          reject(err);
+        }
+        Promise.all(files.map(file => {
+          const filePath = path.join(dir, file);
+          return new Promise((resolve1, reject1) => {
+            ejs.renderFile(filePath, projectInfo, {}, (err, result) => {
+              if (err) {
+                reject1(err);
+              } else {
+                fse.writeFileSync(filePath, result);
+                resolve1(result);
+              }
+            });
+          });
+        })).then(() => {
+          resolve();
+        }).catch(err => {
+          reject(err);
+        });
+      });
+    });
+  }
+
   async installNormalTemplate() {
     log.verbose('安装标准模板');
     // console.log(this.templateNpm, 'this.templateNpm');
@@ -117,6 +153,9 @@ class InitCommand extends Command {
       spinner.stop(true);
       log.success('模板安装成功');
     }  
+    const templateIgnore = this.templateInfo.ignore || [];
+    const ignore = ['**/node_modules/**', ...templateIgnore];
+    await this.ejsRender({ ignore });
     // 安装依赖
     const { installCommand, startCommnand } = this.templateInfo;
     // 依赖安装
@@ -358,6 +397,18 @@ class InitCommand extends Command {
     }
     // 2、获取项目的基本信息
 
+
+    // 生成className
+    if (projectInfo.projectName) {
+      projectInfo.name = projectInfo.projectName;
+      projectInfo.className = require('kebab-case')(projectInfo.projectName).replace(/^-/, '');
+    }
+    if (projectInfo.projectVersion) {
+      projectInfo.version = projectInfo.projectVersion;
+    }
+    if (projectInfo.componentDescription) {
+      projectInfo.description = projectInfo.componentDescription;
+    }
     // 给用户输出 项目的基本 信息
     return projectInfo;
     // throw new Error('出错了');
