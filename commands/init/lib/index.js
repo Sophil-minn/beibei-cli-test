@@ -18,6 +18,7 @@ const TYPE_COMPONENT = 'component';
 const TEMPLATE_TYPE_NORMAL = 'normal';
 const TEMPLATE_TYPE_CUSTOM = 'custom';
 
+// 白名单命令
 const WHITE_COMMAND = ['npm', 'cnpm'];
 
 class InitCommand extends Command {
@@ -49,7 +50,7 @@ class InitCommand extends Command {
   }
 
   async installTemplate () {
-    log.verbose('templateInfo', this.templateInfo);
+
     if (this.templateInfo) {
       if (!this.templateInfo.type) {
         this.templateInfo.type = TEMPLATE_TYPE_NORMAL;
@@ -99,7 +100,7 @@ class InitCommand extends Command {
 
   async installNormalTemplate() {
     log.verbose('安装标准模板');
-    console.log(this.templateNpm, 'this.templateNpm');
+    // console.log(this.templateNpm, 'this.templateNpm');
     // console.log(this.templateNpm.cacheFilePath, 'this.templateNpm.cacheFilePath 缓存路径');
     // 拷贝模板代码至当前目录
     let spinner = spinnerStart('正在安装模板...');
@@ -144,6 +145,7 @@ class InitCommand extends Command {
     const targetPath = path.resolve(userHome, '.beibei-cli-dev', 'template');
     const storeDir = path.resolve(userHome, '.beibei-cli-dev', 'template', 'node_modules');
     this.templateInfo = templateInfo;
+    log.verbose('templateInfo', this.templateInfo);
     const templateNpm = new Package({
       targetPath,
       storeDir,
@@ -154,21 +156,25 @@ class InitCommand extends Command {
     console.log(targetPath, storeDir,npmName, version, templateNpm );
     // 如果不存在直接安装npm， 如果存在直接更新
     if (!await templateNpm.exists()) {
-      console.log('安装 start');
+      // console.log('安装 start');
       const spinner = spinnerStart('正在下载模板...');
       await sleep(5000);
       try {
         await templateNpm.install();
-        spinner.stop(true);
+        // spinner.stop(true);
         this.templateNpm = templateNpm;
-        log.success('下载模板成功');
+        if (await templateNpm.exists()) {
+          log.success('下载模板成功');
+        }
       } catch (error) {
+        console.log('下载模板出错了～');
         throw error;
       } finally {
-        this.templateNpm = templateNpm;
-        console.log('安装 end', templateNpm);
         spinner.stop(true);
-        this.templateNpm = templateNpm;
+        if (await templateNpm.exists()) {
+          log.success('下载模板成功');
+          this.templateNpm = templateNpm;
+        }
       }
     } else {
       console.log('更新 start');
@@ -176,6 +182,8 @@ class InitCommand extends Command {
       await sleep(5000);
       try {
         await templateNpm.update();
+        console.log('更新模板出错了～');
+        spinner.stop(true);
       } catch (error) {
         throw error;
       } finally {

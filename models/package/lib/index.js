@@ -70,7 +70,7 @@ class Package {
   async install() {
     // 安装依赖使用
     await this.prepare();
-    console.log(this.packageVersion, 'this.packageVersion');
+    // console.log(this.packageVersion, 'this.packageVersion');
     return npminstall({
       root: this.targetPath,
       storeDir: this.storeDir,
@@ -84,7 +84,7 @@ class Package {
 
   // 更新package
   async update() {
-    console.log('package update');
+    // console.log('package update');
     await this.prepare();
     // 1. 获取最新的npm模块版本号
     const latestPackageVersion = await getNpmLatestVersion(this.packageName);
