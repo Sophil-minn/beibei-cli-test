@@ -111,6 +111,7 @@ class InitCommand extends Command {
       }, function(err, files) {
         console.log(files, 'files-----');
         if (err) {
+          console.log(err,  'ejsRender glob出错了 ');
           reject(err);
         }
         Promise.all(files.map(file => {
@@ -118,6 +119,7 @@ class InitCommand extends Command {
           return new Promise((resolve1, reject1) => {
             ejs.renderFile(filePath, projectInfo, {}, (err, result) => {
               if (err) {
+                console.log(err, 'renderFile时候 出错了', filePath, 'filePath');
                 reject1(err);
               } else {
                 fse.writeFileSync(filePath, result);
@@ -128,6 +130,7 @@ class InitCommand extends Command {
         })).then(() => {
           resolve();
         }).catch(err => {
+          console.log(err, 'promiseAll 捕获到的异常');
           reject(err);
         });
       });
@@ -154,7 +157,7 @@ class InitCommand extends Command {
       log.success('模板安装成功');
     }  
     const templateIgnore = this.templateInfo.ignore || [];
-    const ignore = ['**/node_modules/**', ...templateIgnore];
+    const ignore = ['**/node_modules/**', '**/img/**', ...templateIgnore];
     await this.ejsRender({ ignore });
     // 安装依赖
     const { installCommand, startCommnand } = this.templateInfo;
@@ -221,7 +224,7 @@ class InitCommand extends Command {
       await sleep(5000);
       try {
         await templateNpm.update();
-        console.log('更新模板出错了～');
+        console.log('更新模板start～');
         spinner.stop(true);
       } catch (error) {
         throw error;
