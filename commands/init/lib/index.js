@@ -33,6 +33,7 @@ class InitCommand extends Command {
     // log.verbose(this.force, 'force');
   }
   async exec() {
+    // console.log('execccccccccccccc');
     try {
       // 1，准备阶段
       const projectInfo = await this.prepare();
@@ -168,7 +169,26 @@ class InitCommand extends Command {
     
   }
   async installCustomTemplate() {
-    log.verbose('安装自定义模板');
+    // 查询自定义模板的入口文件
+    if (await this.templateNpm.exists()) {
+      const rootFile = this.templateNpm.getRootFilePath();
+      if (fs.existsSync(rootFile)) {
+        log.notice('开始执行自定义模板');
+        const templatePath = path.resolve(this.templateNpm.cacheFilePath, 'template');
+        const options = {
+          templateInfo: this.templateInfo,
+          projectInfo: this.projectInfo,
+          sourcePath: templatePath,
+          targetPath: process.cwd(),
+        };
+        const code = `require('${rootFile}')(${JSON.stringify(options)})`;
+        log.verbose('code', code);
+        await execAsync('node', ['-e', code], { stdio: 'inherit', cwd: process.cwd() });
+        log.success('自定义模板安装成功');
+      } else {
+        throw new Error('自定义模板入口文件不存在！');
+      }
+    }
   }
 
   async downloadTemplate() {
@@ -308,6 +328,11 @@ class InitCommand extends Command {
       }],
     });
     const title = type === TYPE_PROJECT ? '项目' : '组件';
+    
+    this.template = this.template.filter(template =>
+      template?.tag?.includes(type));
+
+    console.log(this.template, 'this.template ready ???? ');
     const projectNamePrompt = {
       type: 'input',
       name: 'projectName',
@@ -364,7 +389,15 @@ class InitCommand extends Command {
       choices: this.createTemplateChoice(),
     }
     );
+    console.log(type, 'typetypetypetypetypetypetype');
     if (type === TYPE_PROJECT) {
+      const descriptionPrompt = {
+        type: 'input',
+        name: 'description',
+        message: '请输入项目描述信息',
+        default: '',
+      };
+      projectPrompt.push(descriptionPrompt);
       // 2. 获取项目的基本信息
       const project = await inquirer.prompt(projectPrompt);
       projectInfo = {
@@ -372,6 +405,7 @@ class InitCommand extends Command {
         type,
         ...project,
       };
+      
     } else if (type === TYPE_COMPONENT) {
       const descriptionPrompt = {
         type: 'input',
